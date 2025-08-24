@@ -167,7 +167,7 @@ X = train_df.drop(columns=["Survived"])
 
 # 切分訓練集與驗證集
 X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=0.12, random_state=random_value
+    X, y, test_size=0.05, random_state=random_value
 )
 
 # 訓練與評估
@@ -219,7 +219,14 @@ y_train = train_df["Survived"]
 voting_clf = VotingClassifier(
     estimators=[
         ('lr', LogisticRegression(max_iter=max_value)),
-        ('rf', RandomForestClassifier(random_state=random_value)),
+        ('rf', RandomForestClassifier(
+            n_estimators=200,
+            max_depth=8,
+            min_samples_split=7,
+            min_samples_leaf=5,
+            max_features="sqrt",
+            random_state=42,
+            n_jobs=-1)),
         ('gb', GradientBoostingClassifier(random_state=random_value)),
         ('svc', SVC(probability=True, random_state=random_value))
     ],
@@ -240,5 +247,5 @@ submission = pd.DataFrame({
 
 # 儲存成 CSV
 submission.to_csv("submission.csv", index=False)
-print("✅ 提交檔已輸出：submission.csv")
+print("提交檔已輸出：submission.csv")
 
